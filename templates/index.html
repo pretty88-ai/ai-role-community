@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}首页{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>欢迎回来，{{user.username}}</h2>
+    <p style="margin:12px 0;color:#b8b5c9;">这里是你的AI陪伴与社区空间</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
+        <a href="{{url_for('community')}}" class="btn">进入社区动态</a>
+        <a href="{{url_for('diary_add')}}" class="btn">写新日记</a>
+    </div>
+</div>
+
+<div class="card" style="margin-top:12px;">
+    <h2>AI 角色</h2>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;">
+        {% for r in roles %}
+        <a href="{{ url_for('chat', role_id=r.id) }}" class="btn">
+            {{ r.role_name }}{% if r.is_default %} · 内置{% endif %}
+        </a>
+        {% else %}
+        <p>还没有角色，去创建一个吧。</p>
+        {% endfor %}
+    </div>
+    <a href="{{ url_for('role_add') }}" class="btn" style="margin-top:12px;">+ 创建自定义角色</a>
+</div>
+{% endblock %}
