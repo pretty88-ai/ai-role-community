@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}和{{role.role_name}}聊天{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>和 {{role.role_name}} 聊天</h2>
+
+    {% if role.is_default %}
+    <p style="color:#b8b5c9;font-size:13px;margin-top:-6px;">内置角色 · 所有用户共享同一段聊天记录</p>
+    {% endif %}
+
+    <div class="msg-box" id="msgbox">
+        {% for m in msgs %}
+            {% if m.is_user %}
+            <div class="user-msg">
+                <span>{{ m.content }}</span>
+                <a href="{{ url_for('del_msg', msg_id=m.id) }}" class="btn del">删除</a>
+            </div>
+            {% else %}
+            <div class="ai-msg">
+                <span>{{ m.content }}</span>
+                <a href="{{ url_for('del_msg', msg_id=m.id) }}" class="btn del">删除</a>
+            </div>
+            {% endif %}
+        {% else %}
+            <p style="color:#6f6c80;text-align:center;padding:20px 0;">
+                还没有聊天记录，发第一条消息开始对话吧。
+            </p>
+        {% endfor %}
+    </div>
+
+    <div style="margin-bottom:12px;">
+        <a href="{{ url_for('clear_chat', role_id=role.id) }}" class="btn del">清空全部聊天</a>
+        <a href="{{ url_for('index') }}" class="btn">返回首页</a>
+    </div>
+
+    <form method="post" style="margin-top:8px;">
+        <textarea name="msg" placeholder="输入消息发给 AI（Ctrl+Enter 快速发送）" required></textarea>
+        <button type="submit" class="btn">发送</button>
+    </form>
+</div>
+
+<script>
+window.addEventListener('load', () => {
+    const box = document.getElementById('msgbox');
+    if (box) box.scrollTop = box.scrollHeight;
+
+    // Ctrl+Enter 快捷发送
+    const ta = document.querySelector('textarea[name="msg"]');
+    if (ta) {
+        ta.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                ta.form.submit();
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
